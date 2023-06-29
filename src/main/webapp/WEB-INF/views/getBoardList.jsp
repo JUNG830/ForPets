@@ -1,5 +1,5 @@
-<%@page contentType="text/html; charset=UTF-8" %>
-
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -35,13 +35,11 @@
             <th style="width: 10%">조회수</th>
         </tr>
         <c:forEach var="board" items="${boardList}" varStatus="i">
-        ${boardList}
             <tr>
-                <td>${board.BoardEntity.Board_Seq}</td>
-                <td style="text-align: left"><a href="getBoard?seq=${board.BoardEntity.Board_Seq}">${board.BoardEntity.title}</a></td>
-                <td>${board.BoardEntity.writer}</td>
-                <td><fmt:formatDate value="${board.BoardEntity.CreateDate}" pattern="yyyy-MM-dd"></fmt:formatDate> </td>
-                <td><fmt:formatDate value="${board.BoardEntity.LastModifyDate}" pattern="yyyy-MM-dd"></fmt:formatDate> </td>
+                <td></td>
+                <td style="text-align: left"><a href="getBoard?seq=">${board.title}</a></td>
+                <td>${board.writer}</td>
+                <td><fmt:formatDate value="" pattern="yyyy-MM-dd"></fmt:formatDate> </td>
                 <td>${board.cnt}</td>
             </tr>
         </c:forEach>
