@@ -5,10 +5,10 @@ import ForPets.Repositories.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -47,7 +47,29 @@ public class MemberService {
         }
         return false;
     }
+    
+    // 시큐리티 테스트
+    public Optional<MemberEntity> findById(String Id) {
 
-    public User findByUserUuidForAuthToken(String userUuid) {
+        return memberRepository.findById(Id);
     }
+
+//    public MemberEntity findByIdForAuthToken(String id) {
+//    };
+
+//    @Autowired
+//    private JwtUtil jwtUtil;
+
+//    public MemberEntity registerUser(MemberEntity form) {
+//        MemberEntity found = memberRepository.findById(form.getId());
+//        if(found!=null){
+//            throw new IllegalArgumentException("중복중복");
+//        }
+//
+//        UsingRole role = UsingRole.USING;
+//
+//        MemberEntity user = new MemberEntity.From(form, passwordEncoder.encode(form.getPassword()), role);
+//        return memberRepository.save(user);
+//    }
+
 }

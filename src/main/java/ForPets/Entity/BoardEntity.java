@@ -25,10 +25,10 @@ public class BoardEntity extends BaseTimeEntity {
     @ColumnDefault("USING")
     private UsingRole usingRole;
     private Long cnt;
-    @Transient
-    @DateTimeFormat(pattern = "yyyy-MM-dd/HH:mm:ss")
-    private LocalDateTime CreateDate;
-    @Transient
-    @DateTimeFormat(pattern = "yyyy-MM-dd/HH:mm:ss")
-    private LocalDateTime LastModifyDate;
+//    @Transient
+//    @DateTimeFormat(pattern = "yyyy-MM-dd/HH:mm:ss")
+//    private LocalDateTime CreateDate;
+//    @Transient
+//    @DateTimeFormat(pattern = "yyyy-MM-dd/HH:mm:ss")
+//    private LocalDateTime LastModifyDate;
 }

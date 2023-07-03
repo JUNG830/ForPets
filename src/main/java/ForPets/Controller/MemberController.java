@@ -3,11 +3,12 @@ package ForPets.Controller;
 import ForPets.DTO.MemberDTO;
 import ForPets.Entity.MemberEntity;
 import ForPets.Service.MemberService;
+import ForPets.config.AdminAuthorize;
+import ForPets.config.UserAuthorize;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.Banner;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class MemberController {
     this.memberService = memberService;
   }
 
-  // http://localhost:8282/ 으로 접속 시
+  // http://localhost:8211/ 으로 접속 시
   @GetMapping("/")
   public ModelAndView Main() {
     ModelAndView mav = new ModelAndView();
@@ -40,12 +41,12 @@ public class MemberController {
     return mav;
   }
 
-  @GetMapping("/SignUp")
-  public ModelAndView SignUp() {
+  @GetMapping("/Join")
+  public ModelAndView SignUpPage() {
     log.warn("가라!");
     ModelAndView mav = new ModelAndView();
     //jsp(html)로 갈때는 setViewName // class로 갈때는 setView
-    mav.setViewName("SignUp");
+    mav.setViewName("Join");
 
     return mav;
   }
@@ -56,7 +57,7 @@ public class MemberController {
     ModelAndView mav = new ModelAndView();
     log.warn("★★★★★★★★★회원가입 Controller★★★★★★★★★");
     boolean isSave = false;
-
+    log.warn(req.toString());
     String getId = req.getParameter("id");
     String getPwd = req.getParameter("password");
     log.warn(getId, getPwd);
@@ -77,14 +78,14 @@ public class MemberController {
   * 로그인
   */
   @GetMapping("/Login")
-  public ModelAndView login() {
+  public ModelAndView loginPage() {
     ModelAndView mav = new ModelAndView();
-    log.warn("로그인 GET");
+    log.warn("로그인 Page");
     mav.setViewName("Login");
     return mav;
   }
 
-  @PostMapping("/Login")
+  @PostMapping("/LoginSuc")
   public ModelAndView login(MemberEntity entity, HttpServletRequest req) throws Exception {
     log.warn("로그인 POST");
     ModelAndView mav = new ModelAndView();
@@ -101,4 +102,37 @@ public class MemberController {
     }
     return mav;
   }
+
+  @GetMapping("/dashboard")
+  public String dashboardPage(@AuthenticationPrincipal User user, Model model) {
+    model.addAttribute("loginId", user.getUsername());
+    model.addAttribute("loginRoles", user.getAuthorities());
+    return "dashboard";
+  }
+
+  @GetMapping("/setting/admin")
+  @AdminAuthorize
+  public String adminSettingPage() {
+    return "admin_setting";
+  }
+
+  @GetMapping("/setting/user")
+  @UserAuthorize
+  public String userSettingPage() {
+    return "user_setting";
+  }
+
+
+//  @Autowired
+//  JwtUtil jwtUtil;
+//
+//  @PostMapping("/auth/signup")
+//  public ResponseEntity registerUser(@RequestBody MemberEntity form){
+//    return ResponseEntity.ok(memberService.registerUser(form));
+//  }
+//
+//  @PostMapping("/auth/signin")
+//  public ResponseEntity loginUser(@RequestBody MemberEntity form){
+//    return ResponseEntity.ok(memberService.loginUser(form));
+//  }
 }
