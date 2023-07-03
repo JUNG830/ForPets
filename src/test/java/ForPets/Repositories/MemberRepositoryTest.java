@@ -2,6 +2,7 @@ package ForPets.Repositories;
 
 import ForPets.Entity.BaseTimeEntity;
 import ForPets.Entity.MemberEntity;
+import ForPets.Enum.UsingRole;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,15 +21,18 @@ class MemberRepositoryTest {
     public void signUpTest() {
 
         //log.warn("★★★★★★★★★회원가입 서비스★★★★★★★★★");
-        MemberEntity memberEntity = new MemberEntity();
         //memberInfo.setId_num(1L);
-        memberEntity.setId("test51");
-        memberEntity.setPassword("test1234");
-        //memberInfo.setUsingRole(UsingRole.USING);
-        //memberInfo.setCreateDate(LocalDateTime.now().withNano(0));
-        //memberInfo.setLastDate(LocalDateTime.now().withNano(0));
-        memberRepository.save(memberEntity);
-        System.out.println("시간 : " + String.valueOf(memberEntity.getCreateDate()));
+        for(int i=2; i<=20; i++) {
+            MemberEntity memberEntity = new MemberEntity();
+            memberEntity.setId("test" + i);
+            memberEntity.setPassword("test1234");
+            memberEntity.setUsingRole(UsingRole.USING);
+            //memberInfo.setCreateDate(LocalDateTime.now().withNano(0));
+            //memberInfo.setLastDate(LocalDateTime.now().withNano(0));
+            memberRepository.save(memberEntity);
+            System.out.println("시간 : " + String.valueOf(memberEntity.getCreateDate()));
+        }
+
 
     }
 }

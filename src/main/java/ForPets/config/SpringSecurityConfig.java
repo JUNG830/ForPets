@@ -1,6 +1,11 @@
 package ForPets.config;
 
+import ForPets.JWT.JwtAccessDeniedHandler;
+import ForPets.JWT.JwtAuthEntryPoint;
+import ForPets.JWT.JwtFilter;
 import jakarta.servlet.DispatcherType;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -13,11 +18,17 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SpringSecurityConfig {
+
+  private final JwtAuthEntryPoint jwtAuthEntryPoint;            // 유효한 토큰 없이 접근시 401 UNAUTHORIZED
+  private final JwtAccessDeniedHandler jwtAccessDeniedHandler;  // 권한 불충분시 403 FORBIDDEN 접근이 거부
   @Bean
   public PasswordEncoder passwordEncoder() {
+
     return new BCryptPasswordEncoder();
   }
+
 //  @Bean
 //  PasswordEncoder passwordEncoder() {
 //    return new SimplePasswordEncoder();
@@ -25,15 +36,22 @@ public class SpringSecurityConfig {
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.csrf().disable().cors().disable()
+    http
+            .csrf().disable()
+            .cors().disable()
+            .exceptionHandling()
+            .authenticationEntryPoint(jwtAuthEntryPoint)
+            .accessDeniedHandler(jwtAccessDeniedHandler)
+
+            .and()
             .authorizeHttpRequests(request -> request
                     .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                    .requestMatchers("/status", "/images/**", "/Join", "/auth/join", "/Login", "/dashboard").permitAll()
+                    .requestMatchers("/css/**", "/images/**","/auth/signin", "/signUp", "/auth/signUp", "/login", "/dashboard", "/main").permitAll()
                     .anyRequest().authenticated() // 어떠한 요청이라도 인증필요
             )
             .formLogin(login -> login                       // form 방식 로그인 사용
-                    .loginPage("/Login")                    // [A] 커스텀 로그인 페이지 지정
-                    .loginProcessingUrl("/Login-process")   // [B] submit 받을 url
+                    .loginPage("/auth/signin")                    // [A] 커스텀 로그인 페이지 지정
+                    .loginProcessingUrl("/login-process")   // [B] submit 받을 url
                     .usernameParameter("id")                // [C] submit할 아이디
                     .passwordParameter("password")          // [D] submit할 비밀번호
                     .defaultSuccessUrl("/dashboard", true) // 성공 시 dashboard로

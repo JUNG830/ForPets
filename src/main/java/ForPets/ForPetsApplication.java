@@ -27,7 +27,7 @@ public class ForPetsApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(ForPetsApplication.class, args);
 
-		log.warn(LocalDateTime.now().toString());
+		log.warn(System.getenv("JASYPT_PASSWORD"));
 
 	}
 

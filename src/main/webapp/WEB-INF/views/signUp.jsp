@@ -18,11 +18,11 @@
 
         <p>
             <label for="username" class="sr-only">아이디</label>
-            <input type="text" id="username" name="userid" class="form-control" placeholder="아이디" required="" autofocus="">
+            <input type="text" id="username" name="id" class="form-control" placeholder="아이디" required="" autofocus="">
         </p>
         <p>
             <label for="password" class="sr-only">비밀번호</label>
-            <input type="password" id="password" name="pw" class="form-control" placeholder="비밀번호" required="">
+            <input type="password" id="password" name="password" class="form-control" placeholder="비밀번호" required="">
         </p>
         <button class="btn btn-lg btn-primary btn-block" type="submit">회원가입</button>
     </form>
@@ -31,28 +31,32 @@
         const form = document.getElementById('join_form');
 
         form.addEventListener('submit', e => {
-            e.preventDefault();
+          e.preventDefault();
 
-            const data = new FormData(form);
-            const param = JSON.stringify(Object.fromEntries(data));
+          const data = new FormData(form);
+          const param = JSON.stringify(Object.fromEntries(data));
 
-            fetch('/auth/join', {
-                method: 'POST',
-                body: param,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                debugger;
-                if (response.status == 200) {
-                    window.location.href = '/Main';
-                    alert("회원가입 성공")
-                } else {
-                    alert("회원가입 실패")
-                }
-            })
-            .catch(error => console.log(error))
+          fetch('/auth/signUp', {
+              method: 'POST',
+              body: param,
+              headers: {
+                  'Content-Type': 'application/json'
+              }
+          })
+          .then(response => {
+              debugger;
+              if (response.status == 200) {
+                  console.log(response.status)
+                  console.log(response.data)
+                  window.location.href = '/main';
+                  alert("회원가입 성공")
+              } else {
+                  console.log(response.status)
+                  console.log(response.data)
+                  alert("회원가입 실패")
+              }
+          })
+          .catch(error => console.log(error))
         });
     </script>
 </div>

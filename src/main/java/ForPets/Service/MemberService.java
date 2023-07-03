@@ -1,75 +1,101 @@
 package ForPets.Service;
 
+import ForPets.DTO.MemberDTO;
+import ForPets.DTO.TokenDTO;
 import ForPets.Entity.MemberEntity;
+import ForPets.Enum.UsingRole;
+import ForPets.JWT.JwtUtil;
 import ForPets.Repositories.MemberRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
 @Slf4j
-@Transactional
 @RequiredArgsConstructor
 public class MemberService {
-    private final MemberRepository memberRepository;
+  private final MemberRepository memberRepository;
+  private final PasswordEncoder passwordEncoder;
+  @Autowired
+  private JwtUtil jwtUtil;
 
-    /* 회원가입 서비스 */
-    public boolean signUpMember(String id, String pwd) {
+  @Autowired
+  public MemberService(PasswordEncoder passwordEncoder, MemberRepository repository, JwtUtil jwtUtil) {
+    this.passwordEncoder = passwordEncoder;
+    this.memberRepository = repository;
+    this.jwtUtil = jwtUtil;
+  }
 
-        log.warn("★★★★★★★★★회원가입 서비스★★★★★★★★★");
-        MemberEntity memberEntity = new MemberEntity();
-        memberEntity.setId(id);
-        memberEntity.setPassword(pwd);
-        //memberEntity.setUsingRole(UsingRole.USING);
-        //memberEntity.setCreateDate(LocalDateTime.now().withNano(0));
-        //memberEntity.setLastDate(LocalDateTime.now().withNano(0));
-        MemberEntity result = memberRepository.save(memberEntity);
-        log.warn(result.toString());
+  /**
+   * 회원가입
+   * @param id
+   * @param pwd
+   * @return
+   */
+  public String signUp(String id, String pwd) {
+    MemberEntity memberEntity = MemberEntity.createUser(id, pwd, passwordEncoder, UsingRole.USING);
+    validateDuplicateMember(id);
+    log.warn(id + pwd);
+    log.warn(memberEntity.toString());
+    memberRepository.save(memberEntity);
 
-        return true;
-    }
+    return memberEntity.getId();
+  }
 
-    /**
-     * 로그인
-     */
-    public boolean LoginMember(String id, String pwd) {
-        log.warn("★★★★★★★★★로그인 서비스★★★★★★★★★");
-        log.warn("입력한 아이디(id) : " + id);
-        log.warn("입력한 비밀번호(pwd) : " + pwd);
+  private void validateDuplicateMember(String id) {
+    log.warn("벨리데이션" + id);
+    memberRepository.findById(id)
+            .ifPresent(m -> {
+              throw new IllegalStateException("이미 존재하는 회원입니다.");
+            });
+  }
 
-        List<MemberEntity> memberEntityList = memberRepository.findByIdAndPassword(id, pwd);
-        for(MemberEntity e : memberEntityList) {
-            return true;
-        }
-        return false;
-    }
-    
-    // 시큐리티 테스트
-    public Optional<MemberEntity> findById(String Id) {
-
-        return memberRepository.findById(Id);
-    }
-
-//    public MemberEntity findByIdForAuthToken(String id) {
-//    };
-
-//    @Autowired
-//    private JwtUtil jwtUtil;
-
-//    public MemberEntity registerUser(MemberEntity form) {
-//        MemberEntity found = memberRepository.findById(form.getId());
-//        if(found!=null){
-//            throw new IllegalArgumentException("중복중복");
-//        }
+  /**
+   * 시큐리티 로그인
+   * @param Id
+   * @return
+   */
+//    public Optional<MemberEntity> findById(String Id) {
 //
-//        UsingRole role = UsingRole.USING;
-//
-//        MemberEntity user = new MemberEntity.From(form, passwordEncoder.encode(form.getPassword()), role);
-//        return memberRepository.save(user);
+//        return memberRepository.findById(Id);
 //    }
 
+  /**
+   * 토큰 활용 로그인 / 회원가입
+   */
+  public MemberEntity registerUser(MemberDTO member) {
+    String id = member.getId();
+    String pwd = member.getPassword();
+    Optional<MemberEntity> found = memberRepository.findById(id);
+    if(found.isPresent()){
+      throw new IllegalArgumentException("중복중복");
+    }
+
+    MemberEntity memberEntity = MemberEntity.createUser(id, pwd, passwordEncoder, UsingRole.USING);
+    return memberRepository.save(memberEntity);
+  }
+
+
+  public TokenDTO loginUser(MemberDTO member) {
+    Optional<MemberEntity> user = memberRepository.findById(member.getId());
+//                .orElseThrow(()->new IllegalArgumentException("유저가 존재하지 않음"));
+    log.warn("토큰 발행할까?? 멤버서비스");
+    //유저가 존재하면
+    if(user != null){
+      //패스워드 확인 후 맞으면
+      if(passwordEncoder.matches(member.getPassword(), user.get().getPassword())) {
+        log.warn("비밀번호는 맞았고,,");
+        log.warn(user.get().getId().toString());
+        log.warn(member.getId());
+        //토큰 발급
+        return jwtUtil.generateToken(user.get().getId());
+      }
+    }
+
+    throw new IllegalArgumentException("패스워드가 다름");
+  }
 }

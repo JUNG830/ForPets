@@ -1,0 +1,21 @@
+#jasypt:
+#  encryptor:
+#    bean: jasyptStringEncryptor
+#    property:
+#      prefix: ENC(
+#      suffix: )
+#    password : ENC(Pb3nc9rEeBEusrjbz+3ovONM2K1m1XYD) / ${JASYPT_PASSWORD}
+
+jasypt:
+  encryptor:
+    bean : jasyptStringEncryptor
+    password : ENC(Pb3nc9rEeBEusrjbz+3ovONM2K1m1XYD)
+    property:
+      prefix: ENC(
+      suffix: )
+
+jasypt.encryptor.password : ${JASYPT_PASSWORD}
+
+spring:
+  datasource:
+    password :

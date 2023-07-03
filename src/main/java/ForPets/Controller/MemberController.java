@@ -31,96 +31,15 @@ public class MemberController {
     this.memberService = memberService;
   }
 
-  // http://localhost:8211/ 으로 접속 시
-  @GetMapping("/")
-  public ModelAndView Main() {
-    ModelAndView mav = new ModelAndView();
-    //jsp(html)로 갈때는 setViewName // class로 갈때는 setView
-    mav.setViewName("Main");
-
-    return mav;
-  }
-
-  @GetMapping("/Join")
-  public ModelAndView SignUpPage() {
-    log.warn("가라!");
-    ModelAndView mav = new ModelAndView();
-    //jsp(html)로 갈때는 setViewName // class로 갈때는 setView
-    mav.setViewName("Join");
-
-    return mav;
-  }
-
-  /* 회원가입 */
-  @PostMapping("/SignUp")
-  public ModelAndView memberSignUp(MemberEntity entity, HttpServletRequest req) throws Exception {
-    ModelAndView mav = new ModelAndView();
-    log.warn("★★★★★★★★★회원가입 Controller★★★★★★★★★");
-    boolean isSave = false;
-    log.warn(req.toString());
-    String getId = req.getParameter("id");
-    String getPwd = req.getParameter("password");
-    log.warn(getId, getPwd);
-
-    isSave = memberService.signUpMember(getId, getPwd);
-    if (isSave) {
-      log.warn("MEMBER 테이블 DB 저장 " + isSave);
-      mav.setViewName("Login");
-      return mav;
-    } else {
-      log.warn("MEMBER 테이블 DB 저장 " + isSave);
-      mav.setViewName("Test");
-      return mav;
-    }
-  }
-
-  /*
-  * 로그인
-  */
-  @GetMapping("/Login")
-  public ModelAndView loginPage() {
-    ModelAndView mav = new ModelAndView();
-    log.warn("로그인 Page");
-    mav.setViewName("Login");
-    return mav;
-  }
-
-  @PostMapping("/LoginSuc")
-  public ModelAndView login(MemberEntity entity, HttpServletRequest req) throws Exception {
-    log.warn("로그인 POST");
-    ModelAndView mav = new ModelAndView();
-
-    String getId = req.getParameter("id");
-    String getPwd = req.getParameter("password");
-    log.warn(getId, getPwd);
-
-    boolean isSave = memberService.LoginMember(getId, getPwd);
-    if(isSave) {
-      mav.setViewName("Main");
-    } else {
-      mav.setViewName("Login");
-    }
-    return mav;
-  }
-
   @GetMapping("/dashboard")
+  // @AuthenticationPrincipal : UserDetailsService에서 Return한 객체를 파라미터로 직접 받아 사용할 수 있다.
   public String dashboardPage(@AuthenticationPrincipal User user, Model model) {
     model.addAttribute("loginId", user.getUsername());
     model.addAttribute("loginRoles", user.getAuthorities());
     return "dashboard";
   }
 
-  @GetMapping("/setting/admin")
-  @AdminAuthorize
-  public String adminSettingPage() {
-    return "admin_setting";
-  }
 
-  @GetMapping("/setting/user")
-  @UserAuthorize
-  public String userSettingPage() {
-    return "user_setting";
-  }
 
 
 //  @Autowired

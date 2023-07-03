@@ -13,7 +13,7 @@
 
 <body>
 <div class="container">
-    <form class="form-signin" method="post" action="/Login-process">
+    <form class="form-signin" id="signUp_form">
         <p class="text-center">
             <img src="/images/Main_1.jpg" class="img-thumbnail" style="width: 200px;" alt="이 글이 보인다면 시큐리티 설정 잘못한거임!">
         </p>
@@ -30,9 +30,42 @@
         <button class="btn btn-lg btn-primary btn-block" type="submit">로그인</button>
     </form>
 
-    <form class="form-signin" method="get" action="/join">
+    <form class="form-signin" method="get" action="/signUp">
         <button class="btn btn-lg btn-warning btn-block" type="submit">회원가입하기</button>
     </form>
+
+    <script>
+        const form = document.getElementById('signUp_form');
+
+        form.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const data = new FormData(form);
+            const param = JSON.stringify(Object.fromEntries(data));
+
+            fetch('/login-process', {
+                method: 'POST',
+                body: param,
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => {
+                debugger;
+                if (response.status == 200) {
+                    console.log(response.status)
+                    console.log(response.data)
+                    alert("로그인 성공")
+                    window.location.href = '/main';
+                } else {
+                    console.log(response.status)
+                    console.log(response.data)
+                    alert("로그인 실패")
+                }
+            })
+            .catch(error => console.log(error))
+        });
+    </script>
 </div>
 </body>
 </html>
