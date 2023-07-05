@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 // insert 시 null 인 필드 제외
 @DynamicInsert
 // update 시 null 인 필드 제외
-//@DynamicUpdate
+@DynamicUpdate
 @RequiredArgsConstructor
 @Slf4j
 public class MemberEntity extends BaseTimeEntity {
@@ -33,6 +34,7 @@ public class MemberEntity extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     @ColumnDefault("USING")
     private UsingRole usingRole;
+    private String refresh_token;
 
     public MemberEntity(String id, String password, UsingRole usingRole) {
         this.id = id;

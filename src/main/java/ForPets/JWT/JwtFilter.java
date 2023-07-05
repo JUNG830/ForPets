@@ -4,6 +4,8 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,31 +18,32 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
+@RequiredArgsConstructor
+@Slf4j
 public class JwtFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtil jwtUtil;
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
 
-    public JwtFilter(JwtUtil jwtUtil, UserDetailsService userDetailsService) {
-        this.jwtUtil = jwtUtil;
-        this.userDetailsService = userDetailsService;
-    }
+    private final UserDetailsService userDetailsService;
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.warn("토큰 유효성 확인");
         // request로 부터 Jwt 토큰을 추출함
         String token = parseJwt(request);
+        log.warn(token);
         if(token != null && jwtUtil.isTokenValid(token)){
             // 토큰이 유효하면 토큰으로부터 Subject인 username을 가져와~
             String username = jwtUtil.getUsername(token);
-            //UsernamePasswordAuthenticationToken을 생성하는 부분
+            // UsernamePasswordAuthenticationToken을 생성하는 부분
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            UsernamePasswordAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            // 해당 유저 정보로 UsernamePasswordAuthenticationToken 을 만들어 SecurityContextHolder 에 인증 정보 전달
-            SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            if(userDetails != null) {
+                UsernamePasswordAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                // 해당 유저 정보로 UsernamePasswordAuthenticationToken 을 만들어 SecurityContextHolder 에 인증 정보 전달
+                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+            }
         }
         filterChain.doFilter(request, response);
     }

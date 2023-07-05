@@ -13,9 +13,5 @@ public class TokenDTO {
     private String refreshToken;
     private Long accessTokenExpireInTime;
 
-    public TokenDTO(String accessToken, String refreshToken, long accessTokenExpireInTime) {
-        this.accessToken = accessToken;
-        this.refreshToken = refreshToken;
-        this.accessTokenExpireInTime = accessTokenExpireInTime;
-    }
+
 }

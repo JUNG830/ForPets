@@ -1,6 +1,7 @@
 package ForPets.DTO;
 
 import ForPets.Entity.BaseTimeEntity;
+import ForPets.Enum.UserRole;
 import ForPets.Enum.UsingRole;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,16 @@ public class MemberDTO {
     private String id;
     private String password;
     private UsingRole usingRole;
+    private UserRole userRole;
     private LocalDateTime CreateDate;
     private LocalDateTime LastModifyDate;
+    private String access_token;
+    private String refresh_token;
+    private Long accessTokenExpireInTime;
+
+    public MemberDTO(String accessToken, String refreshToken, long accessTokenExpireInTime) {
+        this.access_token = accessToken;
+        this.refresh_token = refreshToken;
+        this.accessTokenExpireInTime = accessTokenExpireInTime;
+    }
 }

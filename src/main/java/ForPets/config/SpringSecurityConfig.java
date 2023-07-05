@@ -25,14 +25,9 @@ public class SpringSecurityConfig {
   private final JwtAccessDeniedHandler jwtAccessDeniedHandler;  // 권한 불충분시 403 FORBIDDEN 접근이 거부
   @Bean
   public PasswordEncoder passwordEncoder() {
-
     return new BCryptPasswordEncoder();
   }
 
-//  @Bean
-//  PasswordEncoder passwordEncoder() {
-//    return new SimplePasswordEncoder();
-//  }
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -40,17 +35,17 @@ public class SpringSecurityConfig {
             .csrf().disable()
             .cors().disable()
             .exceptionHandling()
-            .authenticationEntryPoint(jwtAuthEntryPoint)
-            .accessDeniedHandler(jwtAccessDeniedHandler)
+            .authenticationEntryPoint(jwtAuthEntryPoint)        // 유효한 토큰 없이 접근시 401 UNAUTHORIZED
+            .accessDeniedHandler(jwtAccessDeniedHandler)        // 권한 불충분시 403 FORBIDDEN 접근이 거부
 
             .and()
             .authorizeHttpRequests(request -> request
                     .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
-                    .requestMatchers("/css/**", "/images/**","/auth/signin", "/signUp", "/auth/signUp", "/login", "/dashboard", "/main").permitAll()
+                    .requestMatchers("/js/**", "/css/**", "/images/**","/login", "/signup", "/dashboard", "/main").permitAll()
                     .anyRequest().authenticated() // 어떠한 요청이라도 인증필요
             )
             .formLogin(login -> login                       // form 방식 로그인 사용
-                    .loginPage("/auth/signin")                    // [A] 커스텀 로그인 페이지 지정
+                    .loginPage("/login")                    // [A] 커스텀 로그인 페이지 지정
                     .loginProcessingUrl("/login-process")   // [B] submit 받을 url
                     .usernameParameter("id")                // [C] submit할 아이디
                     .passwordParameter("password")          // [D] submit할 비밀번호

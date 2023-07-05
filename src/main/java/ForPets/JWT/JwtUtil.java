@@ -1,9 +1,12 @@
 package ForPets.JWT;
 
+import ForPets.DTO.MemberDTO;
 import ForPets.DTO.TokenDTO;
+import ForPets.Service.MemberService;
 import io.jsonwebtoken.*;
-import lombok.Value;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
@@ -11,23 +14,16 @@ import java.util.Date;
 
 @Component
 @Slf4j
-@PropertySource("application.yml")
+@RequiredArgsConstructor
 public class JwtUtil {
-  //jasypt.encryptor.password
-//  @Value(.getSecretKey)
-//  private JasyptConfig jasyptConfig;
-//  private String jwtSecret = jasyptConfig.stringEncryptor().toString();
-  //forpetsMadeByWoo2023forpetsMadeByWoo2023forpetsMadeByWoo2023forpetsMadeByWoo2023forpetsMadeByWoo2023forpetsMadeByWoo2023
-  private final long ACCESS_TOKEN_VALID_PERIOD = 1000L*60*60;     // 1시간
+  private final long ACCESS_TOKEN_VALID_PERIOD = 1000L*60*60*12;     // 12시간
   private final long REFRESH_TOKEN_VALID_PERIOD = 1000L*60*60*24*7; // 7일
 
-//  @Value("${jasypt.encryptor.password}")
-  private String jwtSecret = "forpetsMadeByWoo2023forpetsMadeByWoo2023forpetsMadeByWoo2023forpetsMadeByWoo2023forpetsMadeByWoo2023forpetsMadeByWoo2023";
-//  public JwtUtil(JasyptConfig jasyptConfig) {
-//    this.jasyptConfig = jasyptConfig;
-//  }
+  @Value("${jasypt.encryptor.password}")
+  private String jwtSecret;
 
-  public TokenDTO generateToken(String username){
+
+  public MemberDTO generateToken(String id){
     log.warn("토큰 만들기");
     log.warn(System.getenv("JASYPT_PASSWORD"));
     Date now = new Date();
@@ -35,7 +31,7 @@ public class JwtUtil {
 
     String accessToken = Jwts.builder()
             // :username 으로 클레임을 만들건데, 그걸 Subject로 설정할거야
-            .setClaims(Jwts.claims().setSubject(username))
+            .setClaims(Jwts.claims().setSubject(id))
             // :지금 발급되는 토큰이야
             .setIssuedAt(now)
             // :지금으로부터 ACCESS_TOKEN_VALID_PERIOD 까지 유효해
@@ -54,7 +50,7 @@ public class JwtUtil {
     log.warn("refreshToken : " + refreshToken);
     log.warn("accessTokenExpireIn.getTime() : " + accessTokenExpireIn.getTime());
 
-    return new TokenDTO(accessToken, refreshToken, accessTokenExpireIn.getTime());
+    return new MemberDTO(accessToken, refreshToken, accessTokenExpireIn.getTime());
   }
 
   /**

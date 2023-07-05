@@ -4,6 +4,7 @@ import ForPets.Entity.MemberEntity;
 import ForPets.JWT.UserDetailsImpl;
 import ForPets.Repositories.MemberRepository;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,16 +15,12 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
+@RequiredArgsConstructor
 @Slf4j
 public class UserDetailService implements UserDetailsService {
   private final MemberService memberService;
   private final MemberRepository memberRepository;
 
-  @Autowired
-  public UserDetailService(MemberService memberService, MemberRepository memberRepository) {
-    this.memberService = memberService;
-    this.memberRepository = memberRepository;
-  }
 
   /**
    * 시큐리티 로그인 체크
@@ -49,11 +46,11 @@ public class UserDetailService implements UserDetailsService {
   @Transactional
   public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
     log.warn("로그인 정보 확인");
-    Optional<MemberEntity> user = Optional.ofNullable(memberRepository.findById(id)
-            .orElseThrow(() -> new UsernameNotFoundException("user not found")));
-
-    return UserDetailsImpl.from(user);
+    MemberEntity member = memberRepository.findById(id);
+    if (member != null) {
+      return UserDetailsImpl.from(member);
+    }
+    throw new UsernameNotFoundException("로그인 실패");
   }
-
 
 }

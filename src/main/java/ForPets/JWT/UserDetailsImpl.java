@@ -8,29 +8,28 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Optional;
 
 @Slf4j
 public class UserDetailsImpl implements UserDetails {
 
-    private Optional<MemberEntity> member;
+    private MemberEntity member;
     private Collection<? extends GrantedAuthority> authorities;
 
-    public static UserDetailsImpl from(Optional<MemberEntity> member){
+    public static UserDetailsImpl from(MemberEntity member){
         log.warn("유저디테일 임플");
         SimpleGrantedAuthority simpleGrantedAuthority =
-                new SimpleGrantedAuthority(member.get().getUsingRole().toString());
+                new SimpleGrantedAuthority(member.getUsingRole().toString());
         Collection<GrantedAuthority> collection = new ArrayList<>();
         collection.add(simpleGrantedAuthority);
 
         UserDetailsImpl userDetails = new UserDetailsImpl();
         userDetails.member = member;
         userDetails.authorities = collection;
-
+        log.warn(simpleGrantedAuthority.toString());
         return userDetails;
     }
 
-    public Optional<MemberEntity> getUser(){
+    public MemberEntity getUser(){
         return member;
     }
 
@@ -41,12 +40,12 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public String getPassword() {
-        return member.get().getPassword();
+        return member.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return member.get().getId();
+        return member.getId();
     }
 
     @Override

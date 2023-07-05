@@ -44,7 +44,7 @@ public class ViewConstroller {
      * 회원가입
      * @return
      */
-    @GetMapping("/signUp")
+    @GetMapping("/signup")
     public ModelAndView SignUpPage() {
         log.warn("회원가입 view");
         ModelAndView mav = new ModelAndView();

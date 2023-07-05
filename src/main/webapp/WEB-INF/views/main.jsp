@@ -103,7 +103,7 @@
         <div class="row justify-content-center align-items-center">
           <div class="col-lg-9 text-center">
             <h1 class="heading" data-aos="fade-up">
-              Ya-Ha!
+              Ya-Ha! ${accessToken}
             </h1>
             <form
               action="#"

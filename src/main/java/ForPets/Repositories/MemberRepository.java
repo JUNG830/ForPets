@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface MemberRepository extends JpaRepository<MemberEntity, BigDecimal> {
   List<MemberEntity> findByIdAndPassword(String id, String pwd);
 
-  Optional<MemberEntity> findById(String id);
+  MemberEntity findById(String id);
 
 }

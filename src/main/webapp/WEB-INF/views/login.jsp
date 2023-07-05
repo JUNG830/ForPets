@@ -30,7 +30,7 @@
         <button class="btn btn-lg btn-primary btn-block" type="submit">로그인</button>
     </form>
 
-    <form class="form-signin" method="get" action="/signUp">
+    <form class="form-signin" method="get" action="/signup">
         <button class="btn btn-lg btn-warning btn-block" type="submit">회원가입하기</button>
     </form>
 
@@ -51,7 +51,6 @@
                 }
             })
             .then(response => {
-                debugger;
                 if (response.status == 200) {
                     console.log(response.status)
                     console.log(response.data)
