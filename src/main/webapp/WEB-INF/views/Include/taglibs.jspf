@@ -1,0 +1,44 @@
+<%@ page pageEncoding="utf-8" %><%@ page trimDirectiveWhitespaces="true" %><%@
+taglib uri="http://java.sun.com/jsp/jstl/core"        prefix="c"     %><%@
+taglib uri="http://java.sun.com/jsp/jstl/functions"   prefix="fn"    %><%@
+taglib uri="http://java.sun.com/jsp/jstl/fmt"         prefix="fmt"   %><%@ 
+taglib uri="/WEB-INF/config/aof/taglib.functions.tld" prefix="aoffn" %><%@ 
+taglib uri="/WEB-INF/config/aof/taglib.tags.tld"      prefix="aof"   %><%@ 
+taglib uri="http://www.springframework.org/tags"      prefix="spring"%>
+
+<c:set var="isHttps" value="FALSE"/> <%-- 현재 https 페이지인지 TRUE FALSE로 저장 --%>
+<c:set var="domain" value="<%=request.getRequestURL() %>"/>
+<c:set var="httpPort" value=""/>
+<c:set var="httpsPort" value="<%=request.getLocalPort() %>"/>
+<c:set var="httpsPort" value=":${httpsPort}"/>
+<c:set var="appDomainWeb" value="${aoffn:config('domain.web')}"/> <%-- web 서버 주소 --%>
+<c:set var="appSystemDomain" value="${aoffn:config('system.domain')}"/> <%-- 현재(어드민 or 프론트) 서버 주소 --%>
+<c:set var="appHttpsSystemDomain"><c:out value="${fn:replace(aoffn:config('system.domain'), 'http:', 'https:')}"/>:<c:out value="${aoffn:config('https.port')}"/></c:set>
+<c:set var="appRequestHTTP" value="${appRequestHTTP}" />
+
+<c:set var="appAttachsize" value="${aoffn:config('upload.attachSize')}"/> <%-- 기본 파일 사이즈 Mbyte --%>
+<c:set var="appAttachCount" value="${aoffn:config('upload.attachCount')}"/> <%-- 기본 파일 업로드 카운트 --%>
+<c:set var="appCOURSE_IMAGE_WIDTH" value="480"/> 
+<c:set var="appCOURSE_IMAGE_HEIGHT" value="270"/>
+<c:set var="appCERTIFICATE_IMAGE_WIDTH" value="150"/> 
+<c:set var="appCERTIFICATE_IMAGE_HEIGHT" value="150"/>
+<c:set var="appCOURSE_IMAGE_THUMBNAIL_WIDTH" value="480"/>
+<c:set var="appCOURSE_IMAGE_THUMBNAIL_HEIGHT" value="270"/>
+<c:set var="appEVENT_IMAGE_THUMBNAIL_WIDTH" value="200"/>
+<c:set var="appEVENT_IMAGE_THUMBNAIL_HEIGHT" value="150"/>
+<c:set var="appDomainAbliltyWeb" value="${aoffn:config('domain.ablilty')}"/> <%-- 역량진단 서버 주소 --%>
+<c:set var="appSystemType" value="${aoffn:config('system.systemType')}"/> <%-- 시스템 타입 --%>
+<c:set var="appDomainAuthoringWeb" value="${aoffn:config('domain.authoring')}"/> <%-- OER 서버 주소 --%>
+<c:set var="appDomainAuthoringAdmin" value="${aoffn:config('domain.authoringAdmin')}"/> <%-- OER 서버 주소 --%>
+
+<c:set var="appTodayYYYY"><aof:date datetime="${aoffn:today()}" pattern="yyyy"/></c:set>
+<c:set var="systemRegionYn" value="${aoffn:config('system.systemRegionYn')}" />
+
+<!-- B2B 여부 -->
+<c:set var="appB2bYn">${aoffn:config('System.b2bYn')}</c:set>
+
+<%--
+<c:set var="appCompanyLogo"><c:out value="${appCompanySiteDetail.companySite.logoImagePath}"/></c:set>  <!-- 업체별 로고 -->
+<c:set var="appCompanyName"><c:out value="${appCompanySiteDetail.company.companyName}"/></c:set>  <!-- 업체일련번호 -->
+<c:set var="appCompanySeq"><c:out value="${appCompanySiteDetail.companySite.companySeq}"/></c:set>  <!-- 업체일련번호 -->
+ --%>

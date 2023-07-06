@@ -1,5 +1,6 @@
 package ForPets.Entity;
 
+import ForPets.Enum.UserGrade;
 import ForPets.Enum.UsingRole;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -33,13 +34,17 @@ public class MemberEntity extends BaseTimeEntity {
     private String password;
     @Enumerated(EnumType.STRING)
     @ColumnDefault("USING")
-    private UsingRole usingRole;
-    private String refresh_token;
+    private UsingRole using_role;
+    @Enumerated(EnumType.STRING)
+    @ColumnDefault("USER")
+    private UserGrade user_grade;
+    @Column(name = "refresh_token")
+    private String refreshToken;
 
     public MemberEntity(String id, String password, UsingRole usingRole) {
         this.id = id;
         this.password = password;
-        this.usingRole = usingRole;
+        this.using_role = usingRole;
 
     }
 
@@ -53,6 +58,23 @@ public class MemberEntity extends BaseTimeEntity {
     public static MemberEntity createUser(String userId, String pw, PasswordEncoder passwordEncoder, UsingRole userRole) {
         log.warn("createUser : " + userId + passwordEncoder.encode(pw) + userRole);
         return new MemberEntity(userId, passwordEncoder.encode(pw), userRole);
+    }
+
+    //== 정보 수정 ==//
+    public void updatePassword(PasswordEncoder passwordEncoder, String password){
+        this.password = passwordEncoder.encode(password);
+    }
+
+    public void updateRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
+    }
+    public void destroyRefreshToken(){
+        this.refreshToken = null;
+    }
+
+    //== 패스워드 암호화 ==//
+    public void encodePassword(PasswordEncoder passwordEncoder){
+        this.password = passwordEncoder.encode(password);
     }
 
 }

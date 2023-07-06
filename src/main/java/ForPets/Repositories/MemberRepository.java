@@ -11,8 +11,8 @@ import java.util.Optional;
 
 @Repository
 public interface MemberRepository extends JpaRepository<MemberEntity, BigDecimal> {
-  List<MemberEntity> findByIdAndPassword(String id, String pwd);
 
-  MemberEntity findById(String id);
+  Optional<MemberEntity> findById(String id);
+  Optional<MemberEntity> findByRefreshToken(String refreshToken);
 
 }

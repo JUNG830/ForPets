@@ -6,7 +6,10 @@ import ForPets.Repositories.MemberRepository;
 import ForPets.Service.MemberService;
 import ForPets.config.AdminAuthorize;
 import ForPets.config.UserAuthorize;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Map;
+import java.util.Optional;
 
 @CrossOrigin(value = "http://localhost:3000")
 //@RestController 이거는 boot에서 html을 사용해주는 것이다.
@@ -37,28 +41,41 @@ public class MemberController {
    * @param member
    * @return
    */
-  @PostMapping("/signup")
-  public ResponseEntity<Boolean> signUp(@RequestBody MemberDTO member) {
-    log.warn("회원가입 Controller" + member.toString());
-    try {
-      memberService.signUp(member.getId(), member.getPassword());
-      return new ResponseEntity<>(true, HttpStatus.OK);
-    } catch (Exception e) {
-      return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
-    }
-  }
+//  @PostMapping("/signup")
+//  public ResponseEntity<Boolean> signUp(@RequestBody MemberDTO member) {
+//    log.warn("회원가입 Controller" + member.toString());
+//    try {
+//      memberService.signUp(member.getId(), member.getPassword());
+//      return new ResponseEntity<>(true, HttpStatus.OK);
+//    } catch (Exception e) {
+//      return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+//    }
+//  }
 
   /**
    * 토큰 활용 로그인
    */
-  @PostMapping("/login")
-  public ResponseEntity<MemberEntity> loginUser(@RequestBody MemberDTO member){
-    log.warn("토큰 로그인 컨트롤");
-    MemberDTO memberDTO = memberService.loginUser(member);
-    log.warn(memberDTO.toString());
-    MemberEntity memberEntity = memberRepository.findById(memberDTO.getId());
-    return new ResponseEntity<>(memberEntity, HttpStatus.OK);
-  }
+//  @PostMapping("/login")
+//  public ResponseEntity<?> loginMember(HttpServletResponse response, HttpSession session, @RequestBody Map<String, String> member){
+//    log.warn("토큰 로그인 컨트롤");
+//    String id = member.get("Id");
+//    String pwd = member.get("password");
+//    if((boolean)memberService.loginMember(id, pwd).get("login")){
+//      log.info("로그인 성공 해서 토큰을 발급");
+//      String token = (String)memberService.loginMember(id, pwd).get("token");
+//      Cookie cookie = new Cookie("token", token); // 생성된 토큰을 cookie에 세팅
+//      cookie.setMaxAge(60 * 60 * 12); // 유효기간 12시간으로 설정
+//      cookie.setHttpOnly(true);
+//      cookie.setPath("/");
+//      response.addCookie(cookie); // 응답에 쿠키 추가
+//
+//      Optional<MemberEntity> getMember = memberRepository.findById(id);
+//      session.setAttribute("memberInfo", getMember);  // 세션에 회원정보 저장
+//
+//      return ResponseEntity.ok(true);
+//    }else
+//      return ResponseEntity.ok(false);
+//  }
 
 
   @GetMapping("/dashboard")

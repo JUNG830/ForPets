@@ -1,7 +1,6 @@
 package ForPets.DTO;
 
-import ForPets.Entity.BaseTimeEntity;
-import ForPets.Enum.UserRole;
+import ForPets.Enum.UserGrade;
 import ForPets.Enum.UsingRole;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +18,7 @@ public class MemberDTO {
     private String id;
     private String password;
     private UsingRole usingRole;
-    private UserRole userRole;
+    private UserGrade userGrade;
     private LocalDateTime CreateDate;
     private LocalDateTime LastModifyDate;
     private String access_token;

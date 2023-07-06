@@ -9,13 +9,37 @@
 jasypt:
   encryptor:
     bean : jasyptStringEncryptor
-    password : ENC(Pb3nc9rEeBEusrjbz+3ovONM2K1m1XYD)
-    property:
-      prefix: ENC(
-      suffix: )
+    password : ${JASYPT_PASSWORD}
+#    property:
+#      prefix: ENC(
+#      suffix: )
+jwt:
+  secret: ${JASYPT_PASSWORD}
 
-jasypt.encryptor.password : ${JASYPT_PASSWORD}
+  access:
+    expiration: 43200000 #12시간
+    header: Authorization
 
+  refresh:
+    expiration: 604800000 #7일
+    header: Authorization-refresh
+
+#jasypt.encryptor.password : ${JASYPT_PASSWORD}
 spring:
   datasource:
-    password :
+
+  jpa:
+    properties:
+      hibernate:
+#        format_sql: true
+#        user_sql_cooments: true
+
+    hibernate:
+      ddl-auto: create
+
+# 순환참조 허용
+  application:
+    name: user-service
+  main:
+    allow-circular-references: true
+

@@ -26,7 +26,7 @@ class MemberRepositoryTest {
             MemberEntity memberEntity = new MemberEntity();
             memberEntity.setId("test" + i);
             memberEntity.setPassword("test1234");
-            memberEntity.setUsingRole(UsingRole.USING);
+            memberEntity.setUsing_role(UsingRole.USING);
             //memberInfo.setCreateDate(LocalDateTime.now().withNano(0));
             //memberInfo.setLastDate(LocalDateTime.now().withNano(0));
             memberRepository.save(memberEntity);

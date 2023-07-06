@@ -43,7 +43,7 @@
             const data = new FormData(form);
             const param = JSON.stringify(Object.fromEntries(data));
 
-            fetch('/login-process', {
+            fetch('/login', {
                 method: 'POST',
                 body: param,
                 headers: {
@@ -53,12 +53,12 @@
             .then(response => {
                 if (response.status == 200) {
                     console.log(response.status)
-                    console.log(response.data)
+                    console.log(response.headers)
                     alert("로그인 성공")
-                    window.location.href = '/main';
+                    // window.location.href = '/main';
                 } else {
                     console.log(response.status)
-                    console.log(response.data)
+                    console.log(response.headers)
                     alert("로그인 실패")
                 }
             })

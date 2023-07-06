@@ -1,5 +1,5 @@
 package ForPets.Enum;
 
-public enum UserRole {
+public enum UserGrade {
     USER, ADMIN
 }
