@@ -3,17 +3,14 @@ package ForPets.Entity;
 import ForPets.Enum.UserGrade;
 import ForPets.Enum.UsingRole;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import java.time.LocalDateTime;
+import java.io.Serializable;
+
 
 @Data
 @Entity
@@ -21,10 +18,12 @@ import java.time.LocalDateTime;
 // insert 시 null 인 필드 제외
 @DynamicInsert
 // update 시 null 인 필드 제외
-@DynamicUpdate
-@RequiredArgsConstructor
+//@DynamicUpdate
+//@AllArgsConstructor //여기에 필드에 쓴 모든생성자만 만들어줌
+@RequiredArgsConstructor // 생성자 자동 생성
+//@NoArgsConstructor //기본 생성자를 만들어줌
 @Slf4j
-public class MemberEntity extends BaseTimeEntity {
+public class MemberEntity extends BaseTimeEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
@@ -33,7 +32,7 @@ public class MemberEntity extends BaseTimeEntity {
     private String id;
     private String password;
     @Enumerated(EnumType.STRING)
-    @ColumnDefault("USING")
+    @ColumnDefault("USING") // 나중에 ACTIVE 로 변경 예정.
     private UsingRole using_role;
     @Enumerated(EnumType.STRING)
     @ColumnDefault("USER")
@@ -64,6 +63,9 @@ public class MemberEntity extends BaseTimeEntity {
     public void updatePassword(PasswordEncoder passwordEncoder, String password){
         this.password = passwordEncoder.encode(password);
     }
+//  public void updateNickName(String nickName){
+//    this.nickName = nickName;
+//  }
 
     public void updateRefreshToken(String refreshToken){
         this.refreshToken = refreshToken;
@@ -76,5 +78,10 @@ public class MemberEntity extends BaseTimeEntity {
     public void encodePassword(PasswordEncoder passwordEncoder){
         this.password = passwordEncoder.encode(password);
     }
+
+  //비밀번호 변경, 회원 탈퇴 시, 비밀번호를 확인하며, 이때 비밀번호의 일치여부를 판단하는 메서드입니다.
+  public boolean matchPassword(PasswordEncoder passwordEncoder, String checkPassword){
+    return passwordEncoder.matches(checkPassword, getPassword());
+  }
 
 }

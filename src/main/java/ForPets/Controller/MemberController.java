@@ -1,33 +1,22 @@
 package ForPets.Controller;
 
 import ForPets.DTO.MemberDTO;
-import ForPets.Entity.MemberEntity;
 import ForPets.Repositories.MemberRepository;
 import ForPets.Service.MemberService;
-import ForPets.config.AdminAuthorize;
-import ForPets.config.UserAuthorize;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-
-import java.util.Map;
-import java.util.Optional;
 
 @CrossOrigin(value = "http://localhost:3000")
 //@RestController 이거는 boot에서 html을 사용해주는 것이다.
 //하지만 부트에 jsp를 파싱할때는 @Controller로 바꿔줘야한다.@@
-@Controller
+@RestController
 @RequiredArgsConstructor
 @Slf4j
 public class MemberController {
@@ -38,19 +27,35 @@ public class MemberController {
 
   /**
    * 회원가입
-   * @param member
+   * @param
    * @return
    */
-//  @PostMapping("/signup")
-//  public ResponseEntity<Boolean> signUp(@RequestBody MemberDTO member) {
-//    log.warn("회원가입 Controller" + member.toString());
-//    try {
-//      memberService.signUp(member.getId(), member.getPassword());
-//      return new ResponseEntity<>(true, HttpStatus.OK);
-//    } catch (Exception e) {
-//      return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
-//    }
-//  }
+    @PostMapping("/signup")
+    public ResponseEntity<Boolean> signUp(@RequestBody MemberDTO memberDTO) throws Exception {
+        boolean isSave = memberService.signUp(memberDTO);
+        if (isSave) {
+          return new ResponseEntity<>(true, HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(false, HttpStatus.UNAUTHORIZED);
+    }
+  /**
+   * 회원정보조회
+   */
+  @GetMapping("/member/{id}")
+  public ResponseEntity getInfo(@PathVariable("id") String id) throws Exception {
+    MemberDTO info = memberService.getInfo(id);
+    return new ResponseEntity(info, HttpStatus.OK);
+  }
+
+  /**
+   * 내정보조회
+   */
+  @GetMapping("/member")
+  public ResponseEntity getMyInfo(HttpServletResponse response) throws Exception {
+
+    MemberDTO info = memberService.getMyInfo();
+    return new ResponseEntity(info, HttpStatus.OK);
+  }
 
   /**
    * 토큰 활용 로그인

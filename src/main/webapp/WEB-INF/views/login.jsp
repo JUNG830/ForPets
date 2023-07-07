@@ -38,31 +38,30 @@
         const form = document.getElementById('signUp_form');
 
         form.addEventListener('submit', e => {
-            e.preventDefault();
+          e.preventDefault();
 
-            const data = new FormData(form);
-            const param = JSON.stringify(Object.fromEntries(data));
+          const data = new FormData(form);
+          const param = JSON.stringify(Object.fromEntries(data));
 
-            fetch('/login', {
-                method: 'POST',
-                body: param,
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            })
-            .then(response => {
-                if (response.status == 200) {
-                    console.log(response.status)
-                    console.log(response.headers)
-                    alert("로그인 성공")
-                    // window.location.href = '/main';
-                } else {
-                    console.log(response.status)
-                    console.log(response.headers)
-                    alert("로그인 실패")
-                }
-            })
-            .catch(error => console.log(error))
+          fetch('/login', {
+            method: 'POST',
+            body: param,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+          })
+          .then(response => {
+            if (response.status == 200) {
+                console.log(response.status)
+                alert("로그인 성공")
+                window.location.href = '/main';
+            } else {
+                console.log(response.status)
+                alert("로그인 실패")
+                window.location.href = '/dashboard';
+            }
+          })
+          .catch(error => console.log(error))
         });
     </script>
 </div>

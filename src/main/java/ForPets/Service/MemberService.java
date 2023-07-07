@@ -1,16 +1,26 @@
 package ForPets.Service;
 
-import ForPets.Repositories.MemberRepository;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
+import ForPets.DTO.MemberDTO;
 
-@Service
-@Slf4j
-@RequiredArgsConstructor
-public class MemberService {
-  private final MemberRepository memberRepository;
-//  private final JwtProvider jwtProvider;
+public interface MemberService {
+
+  /**
+   * 회원가입
+   * 정보수정
+   * 회원탈퇴
+   * 정보조회
+   */
+
+  Boolean signUp(MemberDTO memberDTO) throws Exception;
+
+  void update(MemberDTO memberDTO) throws Exception;
+
+  MemberDTO getInfo(String id) throws Exception;
+
+  MemberDTO getMyInfo() throws Exception;
+
+
+
 
   /**
    * 회원가입
